@@ -35,7 +35,7 @@ class FollowViewSet(viewsets.ModelViewSet):
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Post.objects.select_related("author")
     serializer_class = PostSerializer
     permission_classes = [
         IsAuthorOrReadOnlyPermission,
@@ -60,5 +60,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         post_id = self.kwargs.get("post_id")
-        new_queryset = Comment.objects.filter(post_id=post_id)
+        new_queryset = Comment.objects.filter(post_id=post_id).select_related(
+            "author"
+        )
         return new_queryset
